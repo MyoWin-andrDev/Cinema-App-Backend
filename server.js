@@ -6,6 +6,10 @@ connectDB();
 
 const PORT = process.env.PORT;
 
+//API Health Point (Breaking cold start)
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
