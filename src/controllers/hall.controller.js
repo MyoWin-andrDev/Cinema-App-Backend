@@ -1,4 +1,3 @@
-const Cinema = require('../models/cinema.model');
 const Hall = require('../models/hall.model');
 const { formatMessage } = require('../utils/utils');
 
@@ -8,7 +7,7 @@ const createHallInCinema = async (req, res) => {
 }
 
 let getAllHall = async (req, res) => {
-    let result = await Hall.find()
+    let result = await Hall.find();
     formatMessage(res, "Get All Halls", result)
 }
 

@@ -4,6 +4,7 @@ const { generateTimeSlots } = require('../services/timeslot.service');
 const { removeExpiredSlots } = require('../services/timeslot.cleanup');
 const Movie = require('../models/movie.model');
 const { formatMessage } = require('../utils/utils');
+const TimeSlot = require('../models/timeSlot.model');
 
 const syncNowPlaying = async (req, res) => {
     const tmdbMovies = await getNowPlaying();
@@ -26,4 +27,12 @@ const syncNowPlaying = async (req, res) => {
     });
 };
 
-module.exports = { syncNowPlaying };
+let getNowPlayingTimeSlot = async (req, res) => {
+    let result = await TimeSlot.find();
+    formatMessage(res, "Now Playing Time Slot", result)
+}
+
+module.exports = {
+    syncNowPlaying ,
+    getNowPlayingTimeSlot
+};
