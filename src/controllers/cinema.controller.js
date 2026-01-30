@@ -1,17 +1,26 @@
-const cinemaModel = require('../models/cinema.model');
+const Cinema = require('../models/cinema.model');
+const Hall = require('../models/hall.model');
 const { formatMessage } = require('../utils/utils');
 
-let saveCinema = async (req, res) => {
-    let result = await new cinemaModel(req.body).save()
-    formatMessage(res, "Cinema SuccessFully Added", result)
-}
+const createCinema = async (req, res) => {
+    const cinema = await Cinema.create(req.body);
 
-let getCinema = async (req, res) => {
-    let result = await cinemaModel.find();
-    formatMessage(res, "Get All Cinema", result)
-}
+    // auto-create IMAX hall
+    await Hall.create({
+        cinema: cinema._id,
+        hallName: 'IMAX',
+        totalSeats: 110
+    });
+
+    formatMessage(res, "Cinema created with IMAX hall", cinema);
+};
+
+const getCinemas = async (req, res) => {
+    const cinemas = await Cinema.find();
+    formatMessage(res, "Get All Cinemas", cinemas);
+};
 
 module.exports = {
-    saveCinema,
-    getCinema
+    createCinema,
+    getCinemas
 };

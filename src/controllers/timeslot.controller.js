@@ -1,38 +1,25 @@
-const { getNowPlaying } = require('../services/tmdb.service');
-const { saveMovies } = require('../services/movie.service');
-const { generateTimeSlots } = require('../services/timeslot.service');
-const { removeExpiredSlots } = require('../services/timeslot.cleanup');
-const Movie = require('../models/movie.model');
-const { formatMessage } = require('../utils/utils');
 const TimeSlot = require('../models/timeSlot.model');
+const Cinema = require('../models/cinema.model');
+const { formatMessage } = require('../utils/utils');
 
-const syncNowPlaying = async (req, res) => {
-    const tmdbMovies = await getNowPlaying();
-    const firstFive = tmdbMovies.slice(0, 5);
+const getCinemaMovieTimeSlots = async (req, res) => {
+    const { cinemaId, movieId } = req.params;
 
-    const savedMovies = [];
+    const cinema = await Cinema.findById(cinemaId);
+    if (!cinema) throw new Error("Cinema not found");
 
-    for (const movie of firstFive) {
-        const saved = await saveMovies(movie);
-        savedMovies.push(saved);
-    }
+    const slots = await TimeSlot.find({ movie: movieId })
+        .populate({
+            path: 'hall',
+            match: { cinema: cinemaId }
+        })
+        .sort({ start_time: 1 });
 
-    await removeExpiredSlots();
-    await generateTimeSlots(savedMovies);
+    const validSlots = slots.filter(s => s.hall);
 
-    formatMessage(res, 'Movies & TimeSlots synced', {
-        movies: savedMovies.length,
-        days: 7,
-        slotsPerDay: 2
-    });
+    formatMessage(res, "Cinema Movie TimeSlots", validSlots);
 };
 
-let getNowPlayingTimeSlot = async (req, res) => {
-    let result = await TimeSlot.find();
-    formatMessage(res, "Now Playing Time Slot", result)
-}
-
 module.exports = {
-    syncNowPlaying ,
-    getNowPlayingTimeSlot
+    getCinemaMovieTimeSlots
 };
