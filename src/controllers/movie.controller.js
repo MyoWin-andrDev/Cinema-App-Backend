@@ -16,8 +16,14 @@ let syncNowPlaying = async (req, res, next) => {
     formatMessage(res, "Now Playing Movies Synced", saved);
 };
 
+let getMovieFormDB = async(req, res, next) => {
+    let movies = await MovieModel.find();
+    formatMessage(res, "Get All Movies", movies);
+}
+
 module.exports = {
-    syncNowPlaying
+    syncNowPlaying,
+    getMovieFormDB
 }
 
 

@@ -1,7 +1,7 @@
 const extractCast = (cast) => {
     return cast.map(actor => ({
         name: actor.name,
-        profilePath: actor.profile_path
+        profilePath: actor.profile_path || ""
     }));
 };
 

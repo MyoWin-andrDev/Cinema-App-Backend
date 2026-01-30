@@ -6,9 +6,9 @@ const timeSlotSchema = new mongoose.Schema({
         ref: 'movie',
         required: true
     },
-    cinema: {
+    hall: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'cinema',
+        ref: 'hall',
         required: true
     },
     start_time: { type: Date, required: true },
@@ -17,6 +17,12 @@ const timeSlotSchema = new mongoose.Schema({
     base_price: { type: Number, required: true }
 }, { timestamps: true });
 
-const timeSlotModel = mongoose.model('time_slot', timeSlotSchema);
+// prevent duplicates
+timeSlotSchema.index(
+    { movie: 1, hall : 1, show_date: 1, start_time: 1 },
+    { unique: true }
+);
+
+const timeSlotModel = mongoose.model('timeslot', timeSlotSchema);
 
 module.exports = timeSlotModel;
