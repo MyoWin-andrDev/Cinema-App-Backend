@@ -3,6 +3,7 @@ const { saveMovies } = require('../services/movie.service');
 const { generateTimeSlots } = require('../services/timeslot.service');
 const { formatMessage } = require("../utils/utils");
 const TimeSlot = require("../models/timeSlot.model");
+const Movie = require("../models/movie.model");
 
 const syncNowPlaying = async (req, res) => {
     const movies = await getNowPlaying();
@@ -29,10 +30,13 @@ const getCinemasByMovie = async (req, res) => {
             path: 'hall',
             populate: { path: 'cinema' }
         });
-
+    console.log(slots)
     const cinemaMap = new Map();
-
     slots.forEach(slot => {
+        // guard clauses
+        if (!slot.hall) return;
+        if (!slot.hall.cinema) return;
+
         const cinema = slot.hall.cinema;
         cinemaMap.set(cinema._id.toString(), cinema);
     });
@@ -40,7 +44,14 @@ const getCinemasByMovie = async (req, res) => {
     formatMessage(res, "Cinemas Showing Movie", [...cinemaMap.values()]);
 };
 
+
+let getNowPlayingMovie = async (req, res) => {
+    let result = await Movie.find()
+    formatMessage(res, "Now Playing Movie", result)
+}
+
 module.exports = {
     syncNowPlaying,
-    getCinemasByMovie
+    getCinemasByMovie,
+    getNowPlayingMovie
 };

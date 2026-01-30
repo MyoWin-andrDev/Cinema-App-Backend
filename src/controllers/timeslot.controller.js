@@ -20,6 +20,18 @@ const getCinemaMovieTimeSlots = async (req, res) => {
     formatMessage(res, "Cinema Movie TimeSlots", validSlots);
 };
 
+let getAllTimeSlot = async(req, res) => {
+    let result = await TimeSlot.find()
+    formatMessage(res, "All Time Slots", result)
+}
+
+let deleteAllTimeSlot = async(req, res) => {
+    let result = await TimeSlot.deleteMany({})
+    formatMessage(res, "All Time Slots", result)
+}
+
 module.exports = {
-    getCinemaMovieTimeSlots
+    getCinemaMovieTimeSlots,
+    getAllTimeSlot,
+    deleteAllTimeSlot
 };
