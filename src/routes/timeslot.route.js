@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const timeslotController = require('../controllers/timeslot.controller');
 
-router.get('/:cinemaId/movies/:movieId', timeslotController.getCinemaMovieTimeSlots)
-router.get('/', timeslotController.getAllTimeSlot)
-router.post('/delete', timeslotController.deleteAllTimeSlot)
+router.get(
+    '/:movieId/cinema/:cinemaId',
+    timeslotController.getTimeSlotsByMovieAndCinema
+);
 
 module.exports = router;
